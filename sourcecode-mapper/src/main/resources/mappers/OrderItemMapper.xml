@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sourcecode.mapper.OrderItemMapper">
+    <resultMap id="BaseOrderItemResultMap" type="com.sourcecode.domain.OrderItem">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="product_name" property="productName" jdbcType="VARCHAR"/>
+        <result column="product_id" property="productId" jdbcType="INTEGER"/>
+        <result column="product_price" property="productPrice" jdbcType="DECIMAL"/>
+        <result column="amount" property="amount" jdbcType="INTEGER"/>
+        <result column="product_amount" property="productAmount" jdbcType="DECIMAL"/>
+    </resultMap>
+
+    <!-- 根据订单id查询订单明细 -->
+    <select id="selectByOrderId" resultMap="BaseOrderItemResultMap">
+        select
+            oi.id, oi.product_name, oi.product_id, oi.product_price, oi.amount, oi.product_amount
+        from
+            t_order_item oi
+        where
+            order_id = #{orderId,jdbcType=INTEGER}
+    </select>
+
+    <!--  批量保存订单明细  -->
+    <insert id="insertBatch">
+        insert into
+            t_order_item (product_name, product_id,product_price, amount, product_amount,order_id)
+        values
+            <foreach collection="orderItems" separator="," item="orderItem">
+                (#{orderItem.productName,jdbcType=VARCHAR}, #{orderItem.productId,jdbcType=INTEGER},
+                #{orderItem.productPrice,jdbcType=DECIMAL}, #{orderItem.amount,jdbcType=INTEGER},
+                #{orderItem.productAmount,jdbcType=DECIMAL},#{orderItem.order.id,jdbcType=INTEGER})
+            </foreach>
+    </insert>
+
+</mapper>

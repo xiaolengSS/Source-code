@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sourcecode.mapper.ProductImagesMapper">
+
+    <!--  批量保存商品图片  -->
+    <insert id="insertBatch">
+        insert into
+            t_product_images(product_id,image_url,status)
+        values
+        <foreach collection="productImages" separator="," item="productImage">
+            (#{productImage.product.id,jdbcType=INTEGER},
+             #{productImage.imageUrl,jdbcType=VARCHAR},
+             #{productImage.status,jdbcType=INTEGER})
+        </foreach>
+    </insert>
+
+    <!--   根据商品id查询商品下的主图  -->
+    <select id="selectByProductId" parameterType="java.lang.Integer" resultType="com.sourcecode.domain.ProductImages">
+        select
+            id,image_url as imageUrl,status
+        from
+            t_product_images
+        where
+            product_id = #{productId,jdbcType=INTEGER}
+    </select>
+
+</mapper>

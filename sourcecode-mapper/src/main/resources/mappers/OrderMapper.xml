@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sourcecode.mapper.OrderMapper">
+
+    <!-- 基本信息封装 -->
+    <resultMap id="BaseOrderResultMap" type="com.sourcecode.domain.Order">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="order_number" property="orderNumber" jdbcType="VARCHAR"/>
+        <result column="buyer_id" property="buyerId" jdbcType="INTEGER"/>
+        <result column="buyer_name" property="buyerName" jdbcType="VARCHAR"/>
+        <result column="pay_trade_source" property="payTradeSource" jdbcType="VARCHAR"/>
+        <result column="zfb_open_id" property="zfbOpenId" jdbcType="VARCHAR"/>
+        <result column="zfb_nick_name" property="zfbNickName" jdbcType="VARCHAR"/>
+        <result column="zfb_account" property="zfbAccount" jdbcType="VARCHAR"/>
+        <result column="wx_open_id" property="wxOpenId" jdbcType="VARCHAR"/>
+        <result column="wx_nick_name" property="wxNickName" jdbcType="VARCHAR"/>
+        <result column="wx_account" property="wxAccount" jdbcType="VARCHAR"/>
+        <result column="buyer_other" property="buyerOther" jdbcType="VARCHAR"/>
+        <result column="trade_status" property="tradeStatus" jdbcType="INTEGER"/>
+        <result column="order_amount" property="orderAmount" jdbcType="DECIMAL"/>
+        <result column="pay_amount" property="payAmount" jdbcType="DECIMAL"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="pay_time" property="payTime" jdbcType="TIMESTAMP"/>
+        <result column="note" property="note" jdbcType="VARCHAR"/>
+        <result column="is_help" property="isHelp" jdbcType="INTEGER"/>
+        <result column="wx_code" property="wxCode" jdbcType="VARCHAR"/>
+        <result column="qq_code" property="qqCode" jdbcType="VARCHAR"/>
+        <result column="outer_trade_no" property="outerTradeNo" jdbcType="VARCHAR"/>
+
+        <collection property="orderItems"
+                    select="com.sourcecode.mapper.OrderItemMapper.selectByOrderId"
+                    column="id"/>
+
+    </resultMap>
+
+    <!--  查询所有订单（分页 + 条件） -->
+    <select id="selectAll" resultMap="BaseOrderResultMap">
+        select
+            o.id, o.order_number, o.buyer_id, o.buyer_name, o.pay_trade_source, o.zfb_open_id, o.zfb_nick_name,
+            o.zfb_account, o.wx_open_id, o.wx_nick_name, o.wx_account, o.buyer_other, o.trade_status, o.order_amount,
+            o.pay_amount, o.create_time, o.pay_time, o.note, o.is_help, o.wx_code, o.qq_code, o.outer_trade_no
+        from
+            t_order o
+        <where>
+            <if test="tradeStatus != null">
+                and o.trade_status = #{tradeStatus,jdbcType=INTEGER}
+            </if>
+            <if test="orderNumber != null and orderNumber != ''">
+                and o.order_number = #{orderNumber,jdbcType=VARCHAR}
+            </if>
+            <if test="createTimeBegin != null">
+                and o.create_time >= DATE_FORMAT(#{createTimeBegin,jdbcType=TIMESTAMP}, '%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="createTimeEnd != null">
+                <![CDATA[ and o.create_time <= DATE_FORMAT(#{createTimeEnd,jdbcType=TIMESTAMP}, '%Y-%m-%d %H:%i:%s')]]>
+            </if>
+            <if test="payTimeBegin != null">
+                and o.pay_time >= DATE_FORMAT(#{payTimeBegin,jdbcType=TIMESTAMP}, '%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="payTimeEnd != null">
+                <![CDATA[ and o.pay_time <= DATE_FORMAT(#{payTimeEnd,jdbcType=TIMESTAMP}, '%Y-%m-%d %H:%i:%s')]]>
+            </if>
+            <if test="wxCode != null and wxCode != ''">
+                and o.wx_code = #{wxCode,jdbcType=VARCHAR}
+            </if>
+            <if test="qqCode != null and qqCode != ''">
+                and o.qq_code = #{qqCode,jdbcType=VARCHAR}
+            </if>
+            <if test="outerTradeNo != null and outerTradeNo != ''">
+                and o.outer_trade_no = #{outerTradeNo,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+
+    <!--  查询id查询订单信息 -->
+    <select id="selectById" resultMap="BaseOrderResultMap">
+        select
+            o.id, o.order_number, o.buyer_id, o.buyer_name, o.pay_trade_source, o.zfb_open_id, o.zfb_nick_name,
+            o.zfb_account, o.wx_open_id, o.wx_nick_name, o.wx_account, o.buyer_other, o.trade_status, o.order_amount,
+            o.pay_amount, o.create_time, o.pay_time, o.note, o.is_help, o.wx_code, o.qq_code, o.outer_trade_no
+        from
+            t_order o
+        <where>
+            o.id = #{id,jdbcType=INTEGER}
+        </where>
+    </select>
+
+    <!-- 保存订单   -->
+    <insert id="insert" parameterType="com.sourcecode.domain.Order">
+        <selectKey keyProperty="id" keyColumn="id" order="AFTER" resultType="java.lang.Integer">
+            select LAST_INSERT_ID()
+        </selectKey>
+        insert into
+            t_order
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="orderNumber != null" >
+                order_number,
+            </if>
+            <if test="buyerId != null" >
+                buyer_id,
+            </if>
+            <if test="buyerName != null" >
+                buyer_name,
+            </if>
+            <if test="payTradeSource != null" >
+                pay_trade_source,
+            </if>
+            <if test="zfbOpenId != null" >
+                zfb_open_id,
+            </if>
+            <if test="zfbNickName != null" >
+                zfb_nick_name,
+            </if>
+            <if test="zfbAccount != null" >
+                zfb_account,
+            </if>
+            <if test="wxOpenId != null" >
+                wx_open_id,
+            </if>
+            <if test="wxNickName != null" >
+                wx_nick_name,
+            </if>
+            <if test="wxAccount != null" >
+                wx_account,
+            </if>
+            <if test="buyerOther != null" >
+                buyer_other,
+            </if>
+            <if test="tradeStatus != null" >
+                trade_status,
+            </if>
+            <if test="orderAmount != null" >
+                order_amount,
+            </if>
+            <if test="payAmount != null" >
+                pay_amount,
+            </if>
+            <if test="createTime != null" >
+                create_time,
+            </if>
+            <if test="payTime != null" >
+                pay_time,
+            </if>
+            <if test="note != null" >
+                note,
+            </if>
+            <if test="isHelp != null" >
+                is_help,
+            </if>
+            <if test="wxCode != null" >
+                wx_code,
+            </if>
+            <if test="qqCode != null" >
+                qq_code,
+            </if>
+            <if test="outerTradeNo != null" >
+                outer_trade_no,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="orderNumber != null" >
+                #{orderNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="buyerId != null" >
+                #{buyerId,jdbcType=INTEGER},
+            </if>
+            <if test="buyerName != null" >
+                #{buyerName,jdbcType=VARCHAR},
+            </if>
+            <if test="payTradeSource != null" >
+                #{payTradeSource,jdbcType=VARCHAR},
+            </if>
+            <if test="zfbOpenId != null" >
+                #{zfbOpenId,jdbcType=VARCHAR},
+            </if>
+            <if test="zfbNickName != null" >
+                #{zfbNickName,jdbcType=VARCHAR},
+            </if>
+            <if test="zfbAccount != null" >
+                #{zfbAccount,jdbcType=VARCHAR},
+            </if>
+            <if test="wxOpenId != null" >
+                #{wxOpenId,jdbcType=VARCHAR},
+            </if>
+            <if test="wxNickName != null" >
+                #{wxNickName,jdbcType=VARCHAR},
+            </if>
+            <if test="wxAccount != null" >
+                #{wxAccount,jdbcType=VARCHAR},
+            </if>
+            <if test="buyerOther != null" >
+                #{buyerOther,jdbcType=VARCHAR},
+            </if>
+            <if test="tradeStatus != null" >
+                #{tradeStatus,jdbcType=INTEGER},
+            </if>
+            <if test="orderAmount != null" >
+                #{orderAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="payAmount != null" >
+                #{payAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="createTime != null" >
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="payTime != null" >
+                #{payTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="note != null" >
+                #{note,jdbcType=VARCHAR},
+            </if>
+            <if test="isHelp != null" >
+                #{isHelp,jdbcType=INTEGER},
+            </if>
+            <if test="wxCode != null" >
+                #{wxCode,jdbcType=VARCHAR},
+            </if>
+            <if test="qqCode != null" >
+                #{qqCode,jdbcType=VARCHAR},
+            </if>
+            <if test="outerTradeNo != null" >
+                #{outerTradeNo,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+</mapper>

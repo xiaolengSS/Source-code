@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sourcecode.mapper.ProductVideoMapper">
+
+    <!--  批量保存商品视频  -->
+    <insert id="insertBatch">
+        insert into
+            t_product_video(video_url,product_id,status)
+        values
+        <foreach collection="productVideos" separator="," item="productVideo">
+            (
+                #{productVideo.videoUrl,jdbcType=VARCHAR},
+                #{productVideo.product.id,jdbcType=INTEGER},
+                #{productVideo.status,jdbcType=INTEGER}
+            )
+        </foreach>
+    </insert>
+
+    <!--   根据商品id查询商品下的视频  -->
+    <select id="selectByProductId" parameterType="java.lang.Integer" resultType="com.sourcecode.domain.ProductVideo">
+        select
+            id,video_url as videoUrl,status
+        from
+            t_product_video
+        where
+            product_id = #{productId,jdbcType=INTEGER}
+    </select>
+
+</mapper>

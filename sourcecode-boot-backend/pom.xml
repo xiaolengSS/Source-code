@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>sourcecode-parent</artifactId>
+        <groupId>com.sourcecode</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>sourcecode-boot-backend</artifactId>
+
+    <dependencies>
+
+        <!-- 后台网关的依赖    -->
+        <dependency>
+            <groupId>com.sourcecode</groupId>
+            <artifactId>sourcecode-gateway-api-backend</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <!-- 文件上传模块的依赖    -->
+        <dependency>
+            <groupId>com.sourcecode</groupId>
+            <artifactId>sourcecode-gateway-upload</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+
+        <!-- 文件上传模块的依赖    -->
+        <dependency>
+            <groupId>com.sourcecode</groupId>
+            <artifactId>sourcecode-gateway-upload</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <!-- SpringBoot 测试模块的依赖    -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <version>2.3.1.RELEASE</version>
+        </dependency>
+
+    </dependencies>
+
+    <!-- 可以将我们的应用打包成一个jar包  -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

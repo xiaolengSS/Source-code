@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sourcecode.mapper.CategoryMapper">
+
+    <!--    查询全部分类   -->
+    <select id="selectAll" resultType="com.sourcecode.domain.Category">
+        select
+            id,cname,status
+        from
+            t_category
+        <where>
+            <if test="cname != null and cname != ''">
+                and cname like concat('%',#{cname},'%')
+            </if>
+            <if test="status != null and status != -1">
+                and status = #{status}
+            </if>
+        </where>
+    </select>
+
+    <!--    添加分类   -->
+    <insert id="insert" parameterType="com.sourcecode.domain.Category">
+        insert into
+            t_category(cname,status)
+        values
+            (#{cname},#{status})
+    </insert>
+
+    <!--  修改分类  -->
+    <update id="update" parameterType="com.sourcecode.domain.Category">
+        update
+            t_category
+        <set>
+            <if test="cname != null and cname != ''">
+                cname = #{cname,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER}
+            </if>
+        </set>
+        <where>
+            id = #{id,jdbcType=INTEGER}
+        </where>
+    </update>
+
+    <!--   删除分类   -->
+    <delete id="deleteById" parameterType="java.lang.Integer">
+        delete from
+            t_category
+        <where>
+            id = #{id,jdbcType=INTEGER}
+        </where>
+    </delete>
+
+    <!--    查询id查询分类   -->
+    <select id="selectById" resultType="com.sourcecode.domain.Category">
+        select
+            id,cname,status
+        from
+            t_category
+        <where>
+            id = #{id,jdbcType=INTEGER}
+        </where>
+    </select>
+
+</mapper>
